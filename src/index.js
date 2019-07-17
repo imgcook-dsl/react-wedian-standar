@@ -991,7 +991,11 @@ module.exports = function(layoutData, opts) {
     function storeUserDataOrigin(source) {
       if (!fileFlowOptions.dataConfigHasUsed[source]) {
         fileFlowOptions.dataConfigHasUsed[source] = _line(
-          `const ${source} = this.props && this.props.${source};`
+          `const ${source} = JSON.parse(JSON.stringify(location.search.slice(1).split('&').reduce(function(queryObj, keyValStr) {
+      var keyVal = keyValStr.split('=');
+      queryObj[keyVal[0]] = decodeURIComponent(keyVal[1] || '');
+      return queryObj
+    }, Object.create(null))));`
         );
         if (source == 'data') {
           fileFlowOptions.dataConfigHasUsedInOpenCode[source] = _line(
